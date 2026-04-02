@@ -23,12 +23,14 @@ const resetGame = () => {
     count = 0;
     enableBoxes();
     msgContainer.classList.add("hide");
+    clearWinLine();
 }
 
 const enableBoxes = () => {
     for(let box of boxes){
         box.disabled = false;
         box.innerText = "";
+        box.classList.remove("winner");
     }
 }
 const disableBoxes = () => {
@@ -70,17 +72,70 @@ const checkWinner = () => {
         let pos3Val = boxes[pattern[2]].innerText;
 
         if(pos1Val != "" && pos2Val != "" && pos3Val != ""){
-        if(pos1Val === pos2Val && pos2Val === pos3Val){
-            showWinner(pos1Val);
+            if(pos1Val === pos2Val && pos2Val === pos3Val){
+                showWinner(pos1Val, pattern);
+                return true;
+            }
         }
     }
-    }
+    return false;
 };
 
-const showWinner = (winner) => {
+const showWinner = (winner, pattern) => {
     msg.innerText = `Congratulations 🎉  Winner is ${winner}`;
     msgContainer.classList.remove("hide");
     disableBoxes();
+    highlightWinner(pattern);
+};
+
+const highlightWinner = (pattern) => {
+    pattern.forEach(idx => boxes[idx].classList.add("winner"));
+    drawWinLine(pattern);
+};
+
+const clearWinLine = () => {
+    const existingLine = document.querySelector(".win-line");
+    if (existingLine) existingLine.remove();
+};
+
+const drawWinLine = (pattern) => {
+    clearWinLine();
+    const game = document.querySelector(".game");
+    const gameRect = game.getBoundingClientRect();
+
+    const getCenter = (box) => {
+        const r = box.getBoundingClientRect();
+        return {
+            x: r.left - gameRect.left + r.width / 2,
+            y: r.top - gameRect.top + r.height / 2
+        };
+    };
+
+    const start = getCenter(boxes[pattern[0]]);
+    const end   = getCenter(boxes[pattern[2]]);
+
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "win-line");
+    svg.setAttribute("width", gameRect.width);
+    svg.setAttribute("height", gameRect.height);
+
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", start.x);
+    line.setAttribute("y1", start.y);
+    line.setAttribute("x2", end.x);
+    line.setAttribute("y2", end.y);
+
+    const length = Math.hypot(end.x - start.x, end.y - start.y);
+    line.style.strokeDasharray = length;
+    line.style.strokeDashoffset = length;
+
+    svg.appendChild(line);
+    game.appendChild(svg);
+
+    // Trigger animation
+    requestAnimationFrame(() => {
+        line.style.strokeDashoffset = 0;
+    });
 }
 
 newGameBtn.addEventListener("click", resetGame);

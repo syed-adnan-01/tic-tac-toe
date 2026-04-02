@@ -1,97 +1,163 @@
 * {
     padding: 0;
     margin: 0;
+    box-sizing: border-box;
 }
+
 body {
     background-color: #4B8F8C;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    min-height: 100vh;
+    padding: 1rem;
 }
+
 h2 {
-    margin-top: 80px;
-    font-size: 8vmin;
+    font-size: clamp(1.6rem, 6vmin, 3rem);
     color: #452103;
+    margin-bottom: 0.75rem;
+    text-align: center;
 }
 
 .container {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 80vh;
-    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
 }
+
+/* ── Game Grid ──────────────────────────────── */
 .game {
-    height: 60vmin;
-    width: 60vmin;
-    gap: 1.5vmin;
+    height: clamp(270px, 65vmin, 500px);
+    width:  clamp(270px, 65vmin, 500px);
+    gap: clamp(6px, 1.8vmin, 14px);
     flex-wrap: wrap;
     display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
+    position: relative;
 }
+
 .box {
-    height: 18vmin;
-    width: 18vmin;
+    height: clamp(82px, 20vmin, 152px);
+    width:  clamp(82px, 20vmin, 152px);
     background-color: #fefae0;
     border-radius: 1rem;
     box-shadow: 0 0 1rem rgba(0,0,0,0.1);
     color: #834951;
     border: none;
-    font-size: 8vmin;
+    font-size: clamp(1.8rem, 7vmin, 3.5rem);
     transition: all 0.25s ease;
     cursor: pointer;
 }
+
 .box:hover {
-  background-color: #ffffff;
-  transform: translateY(-5px) scale(1.05);
-  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
+    background-color: #ffffff;
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
+
 .box:active {
-  transform: scale(0.95);
+    transform: scale(0.95);
 }
+
 .box:disabled {
-  cursor: not-allowed;
-  background-color: #f0f0f0;
-  color: #444;
-  transform: none;
-  box-shadow: none;
+    cursor: not-allowed;
+    background-color: #f0f0f0;
+    color: #444;
+    transform: none;
+    box-shadow: none;
 }
 
-#reset-Btn{
-    padding: 1rem;
-    gap: 1.5vmin;
-    margin: 1rem;
-    background-color: #050404;
-    color: #EAEAEA;
-    border-radius: 1rem;
-    border: none;
-    font-size: 1em;
+.box.winner {
+    background-color: #f6c90e;
+    color: #1a1a1a;
+    box-shadow: 0 0 18px 4px rgba(246, 201, 14, 0.75);
+    transform: scale(1.08);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
+/* ── Win / Draw Message ─────────────────────── */
 .msg-container {
-  height: 100vmin;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 4rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(6px);
+    border-radius: 1rem;
+    padding: 0.75rem 1.5rem;
+    width: clamp(270px, 65vmin, 500px);
+    flex-wrap: wrap;
 }
+
 #msg {
-  color: #ffffc7;
-  font-size: 5vmin;
+    color: #ffffc7;
+    font-size: clamp(0.9rem, 3vmin, 1.4rem);
+    font-weight: 600;
+    text-align: center;
 }
-#newBtn{
-    padding: 1rem;
-    gap: 1.5vmin;
-    margin: 1rem;
+
+/* ── Buttons ────────────────────────────────── */
+#newBtn,
+#reset-Btn {
+    padding: 0.6rem 1.2rem;
     background-color: #050404;
     color: #EAEAEA;
-    border-radius: 1rem;
+    border-radius: 0.75rem;
     border: none;
-    font-size: 1em;
+    font-size: clamp(0.8rem, 2.5vmin, 1rem);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.15s ease;
+    white-space: nowrap;
 }
+
+#newBtn:hover,
+#reset-Btn:hover {
+    background-color: #2a2a2a;
+    transform: translateY(-2px);
+}
+
+#reset-Btn {
+    margin-top: 0.25rem;
+}
+
+/* ── SVG Win Line ───────────────────────────── */
+.win-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.win-line line {
+    stroke: #f6c90e;
+    stroke-width: 6px;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px rgba(246, 201, 14, 0.9));
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+/* ── Utility ────────────────────────────────── */
 .hide {
-    display: none;
+    display: none !important;
+}
+
+/* ── Mobile ─────────────────────────────────── */
+@media (max-width: 480px) {
+    h2 {
+        margin-bottom: 0.5rem;
+    }
+
+    .msg-container {
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.6rem 1rem;
+    }
 }
